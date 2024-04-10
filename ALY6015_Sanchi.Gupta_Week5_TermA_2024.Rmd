@@ -1,0 +1,539 @@
+---
+title: "Module 5: Nonparametric Statistical Methods and Sampling"
+author: "Sanchi Gupta, ALY6015 Intermediate Analytics"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Introduction:
+
+In this analysis, we delve into the realm of Nonparametric Statistical Methods and Sampling, focusing on real-world applications such as game attendance, lottery ticket sales, and the distribution of prison sentences. Nonparametric methods, unlike their parametric counterparts, do not assume an underlying distribution for the data, making them versatile tools for statistical analysis. Through a series of case studies, we apply techniques like the Sign Test, Wilcoxon Rank Sum Test, Kruskal-Wallis Test, and simulations to understand patterns and make inferences about populations. This exploration not only enhances our statistical toolkit but also provides insights into practical decision-making in diverse fields.
+
+------------------------------------------------------------------------
+
+# Section 13-2.6 Game Attendance
+
+An athletic director suggests the median number for the paid attendance at 20 local football games is 3000. The data for a random sample are shown. At α = 0.05, is there enough evidence to reject the claim? If you were printing the programs for the games, would you use this figure as a guide?
+
+6210, 3150, 2700, 3012,
+
+4875, 3540, 6127, 2581,
+
+2642, 2573, 2792, 2800,
+
+2500, 3700, 6030, 5437,
+
+2758, 3490, 2851, 2720
+
+# Solution
+
+## Sign Test
+
+Forming the dataset
+
+```{r}
+attendance_data <- c(
+  6210, 3150, 2700, 3012, 4875,
+  3540, 6127, 2581, 2642, 2573,
+  2792, 2800, 2500, 3700, 6030,
+  5437, 2758, 3490, 2851, 2720
+)
+```
+
+### Step 1. Stating the hypotheses and identifying the claim
+
+The hypothesis for the above will be as follow:
+
+**Null Hypothesis (H0)** = The true median paid attendance of the local football games is equal to 3000.
+
+**Alternative Hypothesis (H1)**= The true median paid attendance of the local football games is not equal to 3000.
+
+### Step 2. Finding the critical value
+
+When using the p-value for analysis, no critical value is needed. Because of this, we will use the provided p-value and omit this step.
+
+We will use alpha = 0.05.
+
+```{r}
+alpha <- 0.05
+```
+
+### Step 3. Computing the test results
+
+```{r}
+# The claim of the median value
+median_claim <- 3000
+
+# Calculate the number of samples greater than the claim
+number_above <- sum(attendance_data > median_claim)
+
+# Calculate the number of samples less than the claim
+number_below <- sum(attendance_data < median_claim)
+
+# Perform a sign test
+binom.test(c(number_below, number_above))
+
+```
+
+### Step 4. Analyzing the results
+
+**Interpretation:**
+
+-   p-value is 1, which means there's very strong evidence against the null hypothesis. There's no significant difference between the observed success rate and the expected rate of 0.5. Since the p-value (1) is greater than alpha (0.05), we fail to reject the null hypothesis.
+
+### Step 5. Summary
+
+Therefore, based on the extremely high p-value, we fail to reject the null hypothesis. There's insufficient evidence to conclude that the probability of success is different from 0.5.
+
+[**The evidence leads us to not reject the null hypothesis.\
+**]{.underline}
+
+**Q: If you were printing the programs for the games, would you use this figure as a guide?**
+
+There is no statistical evidence to reject the claim that the median number for the paid attendance at 20 local football games is 3000. Therefore, using the figure of 3000 as a guide when printing programs for the games seems reasonable based on the sample data provided. This median figure reflects the central tendency of your data without suggesting any significant deviation in either direction.
+
+------------------------------------------------------------------------
+
+# Section 13**-2.10 Lottery Ticket Sales**
+
+A lottery outlet owner hypothesizes that she sells 200 lottery tickets a day. She randomly sampled 40 days and found that on 15 days she sold fewer than 200 tickets. At *α* = 0.05, is there sufficient evidence to conclude that the median is below 200 tickets?
+
+# Solution
+
+## One Sample-Sign Test
+
+### Step 1. Stating the hypotheses and identifying the claim
+
+The hypothesis for the above will be as follow:
+
+**Null hypothesis (H0):** The median number of lottery tickets sold per day is 200.
+
+**Alternative hypothesis (H1):** The median number of lottery tickets sold per day is below 200.
+
+### Step 2. Finding the critical value
+
+When using the p-value for analysis, no critical value is needed. Because of this, we will use the provided p-value and omit this step.
+
+We will use alpha = 0.05.
+
+```{r}
+alpha <- 0.05
+```
+
+### Step 3. Computing the test results
+
+```{r}
+# Number of days
+n <- 40
+
+# Number of days with fewer than 200 tickets sold
+below_200 <- 15
+
+# Perform the sign test
+ binom.test(x = below_200, n = n, alternative = "less")
+```
+
+### Step 4. Analyzing the results
+
+**Interpretation:**
+
+-   The p-value obtained from the test is 0.07693. Since the p-value (0.07693) is greater than alpha (0.05), we fail to reject the null hypothesis.
+
+### Step 5. Summary
+
+Therefore, with an alpha level of 0.05, there is not sufficient evidence to conclude that the median is below 200 tickets.
+
+[**The evidence leads us to not reject the null hypothesis.**]{.underline}
+
+------------------------------------------------------------------------
+
+# Section **13-3.4 Lengths of Prison Sentences**
+
+A random sample of men and women in prison was asked to give the length of sentence each received for a certain type of crime. At α = 0.05, test the claim that there is no difference in the sentence received by each gender. The data (in months) are shown here.
+
+# Solution
+
+## Wilcoxon rank sum Test
+
+Forming the dataset
+
+```{r}
+# Data for the lengths of prison sentences for males and females
+male_sentences <- c(8, 12, 6, 14, 22, 27, 32, 24, 26, 19, 15, 13)
+female_sentences <- c(7, 5, 2, 3, 21, 26, 30, 9, 4, 17, 23, 12, 11, 16)
+```
+
+### Step 1. Stating the hypotheses and identifying the claim
+
+The hypothesis for the above will be as follow:
+
+**Null Hypothesis (H0):** There is no difference in the distribution of sentence lengths between males and females.
+
+**Alternative Hypothesis (H1):** There is a difference in the distribution of sentence lengths between males and females.
+
+### Step 2. Finding the critical value
+
+When using the p-value for analysis, no critical value is needed. Because of this, we will use the provided p-value and omit this step.
+
+We will use alpha = 0.05.
+
+```{r}
+alpha <- 0.05
+```
+
+### Step 3. Computing the test results
+
+```{r}
+# Perform a Wilcoxon rank-sum test
+wilcox.test(male_sentences, female_sentences, alternative = "two.sided")
+
+```
+
+### Step 4. Analyzing the results
+
+**Interpretation:**
+
+-   This p-value is higher than the alpha level of 0.05, which means that we do not have sufficient evidence to reject the null hypothesis at the 5% significance level.
+
+### Step 5. Summary
+
+Based on the data and with an alpha level of 0.05, we cannot reject the idea that there is no difference in the distribution of sentences between males and females.
+
+[**The evidence leads us to not reject the null hypothesis.**]{.underline}
+
+------------------------------------------------------------------------
+
+# Section 13-3.8 Winning Baseball Games
+
+For the years 1970--1993 the National League (NL) and the American League (AL) (major league baseball) were each divided into two divisions: East and West. Below are random samples of the number of games won by each league's Eastern Division. At α = 0.05, is there sufficient evidence to conclude a difference in the number of wins?
+
+# Solution
+
+## Wilcoxon rank sum Test
+
+Forming the dataset
+
+```{r}
+# NL Eastern Division wins
+nl_east <- c(89, 87, 91, 94, 95, 87, 86, 80, 86, 87, 92, 91, 83, 97, 95, 87, 86, 90, 93, 89, 85, 78, 92, 95, 83)
+
+# AL Eastern Division wins
+al_east <- c(85, 90, 95, 95, 97, 85, 87, 85, 84, 79, 81, 87, 83, 78, 89, 83, 84, 87, 91, 88, 90, 91, 92, 86, 89)
+
+```
+
+### Step 1. Stating the hypotheses and identifying the claim
+
+The hypothesis for the above will be as follow:
+
+**Null hypothesis (H0):** There is no difference in the number of wins between the National League (NL) and the American League (AL) Eastern Divisions.
+
+**Alternative hypothesis (H1):** There is a difference in the number of wins between the NL and AL Eastern Divisions.
+
+### Step 2. Finding the critical value
+
+When using the p-value for analysis, no critical value is needed. Because of this, we will use the provided p-value and omit this step.
+
+We will use alpha = 0.05.
+
+```{r}
+alpha <- 0.05
+```
+
+### Step 3. Computing the test results
+
+```{r}
+# Perform Wilcoxon rank sum test
+wilcox.test(nl_east, al_east, alternative = "two.sided")
+
+```
+
+### Step 4. Analyzing the results
+
+**Interpretation:**
+
+-   The p-value obtained from the test is 0.2589. Since the p-value (0.2589) is greater than the significance level (alpha = 0.05), we fail to reject the null hypothesis.
+
+### Step 5. Summary
+
+Therefore, there is not sufficient evidence to conclude that there is a difference in the number of wins between the NL and AL Eastern Divisions at the 0.05 significance level.
+
+[**The evidence leads us to not reject the null hypothesis.**]{.underline}
+
+------------------------------------------------------------------------
+
+# Section 13-4.A
+
+Use Table K (or relevant software) to determine whether the null hypothesis should be rejected.
+
+• ws = 13, n = 15, α = 0.01, two-tailed
+
+• ws = 32, n = 28, α = 0.025, one-tailed
+
+• ws = 65, n = 20, α = 0.05, one-tailed
+
+• ws = 22, n = 14, α = 0.10, two-tailed
+
+# Solution
+
+### Step 1. Stating the hypotheses and identifying the claim
+
+This step is not included.
+
+### Step 2. Finding the critical value
+
+We have separate p-values for each test.
+
+### Step 3. Computing the test results
+
+```{r}
+wilcox_test_table <- function(ws, n, alpha, tail) {
+  # Calculate the number of observations in the smaller group
+  m <- n / 2 # Assuming equal sized groups for the rank sum test
+  
+  # Adjust alpha for two-tailed test
+  if (tail == "two.tailed") {
+    alpha <- alpha / 2
+  }
+  
+  # Calculate critical value from the Wilcoxon Rank Sum distribution
+  critical_value <- qwilcox(alpha, m, m, lower.tail = (tail == "less"))
+  
+  # Determine whether to reject the null hypothesis
+  message <- if ((tail == "less" && ws <= critical_value) || 
+                 (tail == "greater" && ws >= critical_value) || 
+                 (tail == "two.tailed" && (ws <= critical_value || ws >= (m*m - critical_value)))) {
+    "Reject null hypothesis"
+  } else {
+    "Fail to reject null hypothesis"
+  }
+  
+  message <- paste(message, "(ws =", ws, ", cv =", critical_value, ", alpha =", alpha, ", tail =", tail, ")")
+  
+  return(message)
+}
+
+# Evaluate the given scenarios
+results <- list(
+  wilcox_test_table(ws = 13, n = 15, alpha = 0.01, tail = "two.tailed"),
+  wilcox_test_table(ws = 32, n = 28, alpha = 0.025, tail = "less"),
+  wilcox_test_table(ws = 65, n = 20, alpha = 0.05, tail = "greater"),
+  wilcox_test_table(ws = 22, n = 14, alpha = 0.10, tail = "two.tailed")
+)
+
+# Print the results
+results
+
+#(OpenAI,2024)
+
+
+```
+
+------------------------------------------------------------------------
+
+# Section 13-5.2 Mathematics Literacy Scores
+
+Through the Organization for Economic Cooperation and Development (OECD), 15-year-olds are tested in member countries in mathematics, reading, and science literacy. Listed are randomly selected total mathematics literacy scores (i.e., both genders) for selected countries in different parts of the world. Test, using the Kruskal-Wallis test, to see if there is a difference in means at α = 0.05.
+
+# Solution
+
+## Kruskal wallis Test
+
+Creating the dataset
+
+```{r}
+western_hemisphere <- c(527, 406, 474, 381, 411)
+europe <- c(520, 510, 513, 548, 496)
+eastern_asia <- c(523, 547, 547, 391, 549)
+
+
+# Combine the data into a list 
+scores <- c(western_hemisphere, europe, eastern_asia)
+groups <- factor(rep(c("Western Hemisphere", "Europe", "Eastern Asia"), 
+                     each = 5))
+```
+
+### Step 1. Stating the hypotheses and identifying the claim
+
+The hypothesis for the above will be as follow:
+
+**Null Hypothesis (H0):** The median total mathematics literacy scores for 15-year-olds are the same across all groups (Western Hemisphere, Europe, Eastern Asia).
+
+**Alternative Hypothesis (H1):** At least one group's median total mathematics literacy scores for 15-year-olds is different from the others.
+
+### Step 2. Finding the critical value
+
+When using the p-value for analysis, no critical value is needed. Because of this, we will use the provided p-value and omit this step.
+
+We will use alpha = 0.05.
+
+```{r}
+alpha <- 0.05
+```
+
+### Step 3. Computing the test results
+
+```{r}
+kruskal.test(scores, groups)
+```
+
+### Step 4. Analyzing the results
+
+**Interpretation:**
+
+-   Since the p-value (0.1245) is greater than the chosen significance level (α = 0.05), we fail to reject the null hypothesis. This means that there is not enough evidence to conclude that there is a statistically significant difference in means among the selected countries' mathematics literacy scores at the 5% significance level.
+
+### Step 5. Summary
+
+Based on the results, we do not have sufficient evidence to suggest that the mathematics literacy scores differ significantly among the countries.
+
+[**The evidence leads us to not reject the null hypothesis.**]{.underline}
+
+------------------------------------------------------------------------
+
+# Section 13-6.6 Subway and Commuter Rail Passengers
+
+Six cities are randomly selected, and the number of daily passenger trips (in thousands) for subways and commuter rail service is obtained. At *α* = 0.05, is there a relationship between the variables? Suggest one reason why the transportation authority might use the results of this study.
+
+# Solution
+
+## Spearman Rank Correlation
+
+Creating the data
+
+```{r}
+subway <- c(845, 494, 425, 313, 108, 41)
+rail <- c(39, 291, 142, 103, 33, 38)
+```
+
+### Step 1. Finding spearman rank correlation coefficient
+
+```{r}
+passenger_correlation <- cor(subway, rail, method = "spearman")
+passenger_correlation
+```
+
+### Step 2. Finding the critical value
+
+```{r}
+n <- length(subway)
+critical_value <- qnorm(1 - 0.05/2) / sqrt(n-1)
+```
+
+### Step 3. Computing the test results
+
+```{r}
+abs(passenger_correlation) > critical_value
+```
+
+### Step 4. Analyzing the results
+
+**Interpretation:**
+
+-   Since the result of the test comparison is FALSE, we would conclude that there is not enough statistical evidence to claim that there is a significant correlation between the variables represented by subway and passenger_correlation.
+
+### Step 5. Summary
+
+Since the correlation is not statistically significant, we would conclude that there is no strong evidence to suggest a linear association between the two variables based on the data provided.
+
+[**The evidence leads us to not reject the null hypothesis.**]{.underline}
+
+**Q: Suggest one reason why the transportation authority might use the results of this study.**
+
+One reason why the transportation authority might use the results of the study on the correlation between daily passenger trips for subways and commuter rail service is for strategic planning and resource allocation. For instance, if there is a positive correlation, indicating that commuters often use both modes of transportation, the authority might consider building intermodal transportation hubs to facilitate transfers between subway and rail services.
+
+------------------------------------------------------------------------
+
+# Section 14-3.16 Prizes in Caramel Corn Boxes
+
+A caramel corn company gives four different prizes, one in each box. They are placed in the boxes at random. Find the average number of boxes a person needs to buy to get all four prizes. (40)
+
+# Solution
+
+```{r}
+set.seed(58)
+
+# Function to simulate buying boxes until all four prizes are collected
+simulate_boxes_for_prizes <- function() {
+  prizes_collected <- numeric(4)
+  num_boxes <- 0 
+  
+  # Keep buying boxes until all four prizes are collected
+  while (sum(prizes_collected < 1) > 0) {
+    prize <- sample(1:4, 1) # Randomly get a prize from 1 to 4
+    prizes_collected[prize] <- prizes_collected[prize] + 1
+    num_boxes <- num_boxes + 1
+  }
+  
+  return(num_boxes)
+}
+
+# Run the simulation 40 times
+num_simulations <- 40
+simulation_results <- replicate(num_simulations, simulate_boxes_for_prizes())
+
+# Calculate the average number of boxes needed
+average_boxes_needed <- mean(simulation_results)
+average_boxes_needed
+
+```
+
+**8.475 boxes** represents the average number of caramel corn boxes one would need to purchase to obtain all four prizes based on the 40 repetitions of the experiment.
+
+------------------------------------------------------------------------
+
+# Section 14-3.18 Lottery Winner
+
+To win a certain lotto, a person must spell the word big. Sixty percent of the tickets contain the letter b,
+
+30% contain the letter i, and 10% contain the letter g. Find the average number of tickets a person must
+
+buy to win the prize. (30)
+
+# Solution
+
+```{r}
+set.seed(42) # For reproducibility
+
+# Function to simulate buying tickets until the word 'big' is spelled
+simulate_lottery <- function() {
+  letters_collected <- c('b' = 0, 'i' = 0, 'g' = 0) # Initialize letters collected
+  num_tickets <- 0 # Initialize number of tickets bought
+  
+  # Keep buying tickets until all letters are collected
+  while (min(letters_collected) == 0) {
+    letter <- sample(c('b', 'i', 'g'), 1, prob = c(0.6, 0.3, 0.1))
+    letters_collected[letter] <- letters_collected[letter] + 1
+    num_tickets <- num_tickets + 1
+  }
+  
+  return(num_tickets)
+}
+
+# Run the simulation 30 times
+num_simulations <- 30
+simulation_results <- replicate(num_simulations, simulate_lottery())
+
+# Calculate the average number of tickets needed
+average_tickets_needed <- mean(simulation_results)
+average_tickets_needed
+# (OpenAI,2024)
+```
+
+The value 11.06667 represents the average number of tickets a person must buy to win the prize in the lotto simulation, based on the 30 trials conducted.
+
+------------------------------------------------------------------------
+
+# Conclusion:
+
+Throughout this module, we engaged in a comprehensive examination of nonparametric statistical methods, applying them to varied datasets to uncover underlying patterns and test hypotheses. From assessing game attendance and lottery ticket sales to analyzing prison sentence lengths and literacy scores, these methods proved invaluable in drawing meaningful conclusions without relying on parametric assumptions. Our findings underscore the utility of nonparametric approaches in real-world analytics, offering robust solutions to complex statistical questions. This journey not only broadened our understanding of nonparametric statistics but also highlighted their critical role in data-driven decision-making across different domains.
+
+------------------------------------------------------------------------
+
+# References:
+
+-   OpenAI. (2021). ChatGPT (Version 3.5). OpenAI.<https://chat.openai.com/>
+
+-   Lab: Nonparametric Statistical Methods and Sampling [Video]. Panopto. Northeastern University
+
+-   Northeastern University. (n.d.). ALY6015_Module5_R_Tutorials_WinterA_2024 [.rmd file]
